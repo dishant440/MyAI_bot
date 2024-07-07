@@ -1,22 +1,17 @@
 import { Telegraf } from 'telegraf'
 import { message } from 'telegraf/filters'
+import { configDotenv } from 'dotenv';
+configDotenv();
 
-const bot = new Telegraf(process.env.BOT_TOKEN)
 
-bot.command('quit', async (ctx) => {
-  // Explicit usage
-  await ctx.telegram.leaveChat(ctx.message.chat.id)
+const Token = process.env.BOT_TOKEN
 
-  // Using context shortcut
-  await ctx.leaveChat()
-})
+const bot = new Telegraf(Token)
+
 
 bot.on(message('text'), async (ctx) => {
   // Explicit usage
-  await ctx.telegram.sendMessage(ctx.message.chat.id, `Hello ${ctx.state.role}`)
-
-  // Using context shortcut
-  await ctx.reply(`Hello ${ctx.state.role}`)
+  await ctx.telegram.sendMessage(ctx.message.chat.id, `Hello how can i help you`)
 })
 
 bot.on('callback_query', async (ctx) => {
