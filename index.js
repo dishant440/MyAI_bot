@@ -12,9 +12,9 @@ const bot = new Telegraf(Token)
 connection();
 
 bot.start(async(ctx)=> {
-  const from = await bot.update.from;
+  const from = ctx.update.message.from
   try {
-    await User.findOneAndUpdate({tgId: from.tgId},
+   const result =  await User.findOneAndUpdate({telegramId: from.id},
       {
         $setOnInsert:{
           firstName: from.first_name,
@@ -24,17 +24,19 @@ bot.start(async(ctx)=> {
       },
       {upsert:true,new:true}
     );
+    console.log(result);
     await ctx.reply(`Welcome to MyAI ${from.first_name}`)
   } catch (error) {
-
-    await cts.reply("something went wrong")
+    console.log(error.message);
+    await ctx.reply("something went wrong")
+    process.kill(process.pid,'SIGTERM')
 
   }
 })
 
-bot.on(message('text'), async (ctx) => {
-  await ctx.telegram.sendMessage(ctx.message.chat.id, `Hello ${ctx.from.first_name} how can i help you`)
-});
+// bot.on(message('text'), async (ctx) => {
+//   await ctx.telegram.sendMessage(ctx.message.chat.id, `Hello ${ctx.from.first_name} how can i help you`)
+// });
 
 
 bot.launch()
